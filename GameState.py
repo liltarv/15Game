@@ -22,6 +22,10 @@ class GameState:
     def __init__(self, gridList):
         self.gridList = gridList
 
+    #edit gridList to be the base (solved) configuration for a grid of size rows x cols
+    def make_base_gridList(self, rows, cols):
+        pass
+
 
     #modifies gridList by moving a piece at index in the specified direction
     def move(self, index, direction):
@@ -38,11 +42,13 @@ class GameState:
     def game_over(self):
         return False
     
+
     #returns a list of directions in which other pieces can move into the empty space
     #EXAMPLE: A return of [Direction.UP, Direction.LEFT] means that the piece above and to the left of the empty space can move down and right respectively into the empty space
     def get_legal_moves(self):
         return []
     
+
 
 
 

@@ -24,12 +24,27 @@ class GameState:
 
     #edit gridList to be the base (solved) configuration for a grid of size rows x cols
     def make_base_gridList(self, rows, cols):
-        pass
+        self.gridList = list(range(1, rows * cols)) + [0]
 
 
-    #modifies gridList by moving a piece at index in the specified direction
-    def move(self, index, direction):
-        pass
+    #swaps two pieces in the grid
+    def swapPieces(self, index1, index2):
+        self.gridList[index1], self.gridList[index2] = self.gridList[index2], self.gridList[index1]
+
+    
+    #returns the index, row, and column of the empty space (0)
+    def getEmptyPosition(self, globals):
+        empty_index = self.gridList.index(0)
+        empty_row = empty_index // globals.COLS
+        empty_col = empty_index % globals.COLS
+        return empty_index, empty_row, empty_col
+
+
+    #modifies gridList by moving a piece in the specified direction
+    #the piece should NOT be 0
+    def move(self, piece_index, direction, globals):
+        empty_index, _, _ = self.getEmptyPosition(globals)
+        self.swapPieces(empty_index, piece_index)
 
 
     #returns an integer heuristic value that is calculates as follows:
@@ -40,13 +55,32 @@ class GameState:
 
     #returns a boolean indicating whether gridList is in a solved state
     def game_over(self):
-        return False
+        for i in range(len(self.gridList) - 1):
+            if self.gridList[i] != i + 1:
+                return False
+        return self.gridList[-1] == 0
     
 
     #returns a list of directions in which other pieces can move into the empty space
     #EXAMPLE: A return of [Direction.UP, Direction.LEFT] means that the piece above and to the left of the empty space can move down and right respectively into the empty space
-    def get_legal_moves(self):
-        return []
+    def get_legal_moves(self, globals):
+        empty_index, empty_row, empty_col = self.getEmptyPosition(globals)
+        legal_moves = []
+        
+        # Check if there's a piece above (it can move DOWN)
+        if empty_row > 0:
+            legal_moves.append(self.Direction.DOWN)
+        # Check if there's a piece below (it can move UP)
+        if empty_row < globals.ROWS - 1:
+            legal_moves.append(self.Direction.UP)
+        # Check if there's a piece to the left (it can move RIGHT)
+        if empty_col > 0:
+            legal_moves.append(self.Direction.RIGHT)
+        # Check if there's a piece to the right (it can move LEFT)
+        if empty_col < globals.COLS - 1:
+            legal_moves.append(self.Direction.LEFT)
+        
+        return legal_moves
     
 
 

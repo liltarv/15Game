@@ -7,7 +7,7 @@ from pygame import draw, display
 # Initialize pygame
 pygame.init()
 
-globals = Globals.Globals(400, 400, 4, 4)
+globals = Globals.Globals(520, 520, 4, 4)
 model = GameState.GameState([])
 model.make_base_gridList(globals.ROWS, globals.COLS)
 
@@ -25,10 +25,10 @@ def key_handler(event):
     
     # Map pygame keys to directions and their piece offsets
     key_to_direction_offset = {
-        pygame.K_UP: (GameState.GameState.Direction.UP, -globals.COLS),
-        pygame.K_DOWN: (GameState.GameState.Direction.DOWN, globals.COLS),
-        pygame.K_LEFT: (GameState.GameState.Direction.LEFT, -1),
-        pygame.K_RIGHT: (GameState.GameState.Direction.RIGHT, 1),
+        pygame.K_UP: (GameState.GameState.Direction.UP, globals.COLS),
+        pygame.K_DOWN: (GameState.GameState.Direction.DOWN, -globals.COLS),
+        pygame.K_LEFT: (GameState.GameState.Direction.LEFT, 1),
+        pygame.K_RIGHT: (GameState.GameState.Direction.RIGHT, -1),
     }
     
     if event.key in key_to_direction_offset:
@@ -38,7 +38,14 @@ def key_handler(event):
         if direction in legal_moves:
             empty_index = model.gridList.index(0)
             piece_index = empty_index + offset
-            model.move(piece_index, direction, globals)
+            
+            # Check for index bounds and ensure the piece is valid
+            if 0 <= piece_index < len(model.gridList) and model.gridList[piece_index] != 0:
+                # Start animation
+                piece_value = model.gridList[piece_index]
+                #drawer.start_animation(piece_value, piece_index, empty_index, globals)
+                # Move the piece
+                model.move(piece_index, direction, globals)
 
 
 #update display
@@ -57,8 +64,8 @@ while running:
     display.flip()
     
     # Check if game is won
-    if model.game_over():
-        print("You won!")
-        running = False
+    #if model.game_over():
+        #print("You won!")
+        #running = False
 
 pygame.quit()

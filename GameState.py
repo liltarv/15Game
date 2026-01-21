@@ -81,7 +81,13 @@ class GameState:
             legal_moves.append(self.Direction.LEFT)
         
         return legal_moves
-    
+
+    def is_tile_correct(self, tile_value, tile_index, rows, cols):
+        """Check if a tile is in its correct position"""
+        if tile_value == 0:
+            return tile_index == rows * cols - 1
+        return tile_value == tile_index + 1
+
 
 
 

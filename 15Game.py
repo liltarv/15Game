@@ -41,11 +41,11 @@ def key_handler(event):
             
             # Check for index bounds and ensure the piece is valid
             if 0 <= piece_index < len(model.gridList) and model.gridList[piece_index] != 0:
-                # Start animation
-                piece_value = model.gridList[piece_index]
-                #drawer.start_animation(piece_value, piece_index, empty_index, globals)
                 # Move the piece
                 model.move(piece_index, direction, globals)
+    elif event.key == pygame.K_r:
+        # Randomize the board
+        model.randomizeBoard(globals)
 
 
 #update display

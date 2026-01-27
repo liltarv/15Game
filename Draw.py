@@ -1,6 +1,3 @@
-import time
-import math
-
 class Draw:
     def __init__(self, globals):
         self.screen = self.initScreen(globals)
@@ -11,9 +8,6 @@ class Draw:
         self.INCORRECT_TILE_COLOR = (100, 150, 200)
         self.BORDER_COLOR = (200, 200, 220)
         self.TEXT_COLOR = (255, 255, 255)
-        self.tile_positions = {}  # Track current positions for animation
-        self.animation_duration = 0.2  # seconds (increased for smoother feel)
-        self.animated_tiles = {}  # {tile_value: {'start_pos': (x,y), 'end_pos': (x,y), 'start_time': time}}
         self.TILE_SPACING = 8  # pixels between tiles
 
     def calculate_tile_dimensions(self, globals):
@@ -22,46 +16,6 @@ class Draw:
         tile_width = (globals.DIMX - (spacing * (globals.COLS + 1))) / globals.COLS
         tile_height = (globals.DIMY - (spacing * (globals.ROWS + 1))) / globals.ROWS
         return tile_width, tile_height
-
-    def start_animation(self, tile_value, start_index, end_index, globals):
-        """Start animation for a tile moving from start_index to end_index"""
-        tile_width, tile_height = self.calculate_tile_dimensions(globals)
-        spacing = self.TILE_SPACING
-        
-        start_x = spacing + (start_index % globals.COLS) * (tile_width + spacing)
-        start_y = spacing + (start_index // globals.COLS) * (tile_height + spacing)
-        end_x = spacing + (end_index % globals.COLS) * (tile_width + spacing)
-        end_y = spacing + (end_index // globals.COLS) * (tile_height + spacing)
-        
-        self.animated_tiles[tile_value] = {
-            'start_pos': (start_x, start_y),
-            'end_pos': (end_x, end_y),
-            'start_time': time.time()
-        }
-
-    def get_animated_position(self, tile_value, default_pos):
-        """Get the current animated position of a tile, or default if not animating"""
-        if tile_value not in self.animated_tiles:
-            return default_pos
-        
-        anim = self.animated_tiles[tile_value]
-        elapsed = time.time() - anim['start_time']
-        
-        if elapsed >= self.animation_duration:
-            del self.animated_tiles[tile_value]
-            return default_pos
-        
-        # Ease-in-out cubic for smoother animation
-        progress = elapsed / self.animation_duration
-        eased_progress = progress * progress * (3 - 2 * progress)  # Smoothstep
-        
-        start_x, start_y = anim['start_pos']
-        end_x, end_y = anim['end_pos']
-        
-        current_x = start_x + (end_x - start_x) * eased_progress
-        current_y = start_y + (end_y - start_y) * eased_progress
-        
-        return (int(current_x), int(current_y))
 
     #draws the current game grid on the screen
     def drawGrid(self, gameState, globals):
@@ -83,10 +37,6 @@ class Draw:
                 # Get the value at this position
                 index = i * globals.COLS + j
                 value = gameState.gridList[index] if index < len(gameState.gridList) else 0
-                
-                # Get animated position if tile is animating
-                if value != 0:
-                    x, y = self.get_animated_position(value, (x, y))
                 
                 # Check if tile is in correct position
                 if gameState.is_tile_correct(value, index, globals.ROWS, globals.COLS):

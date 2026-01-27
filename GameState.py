@@ -88,6 +88,40 @@ class GameState:
             return tile_index == rows * cols - 1
         return tile_value == tile_index + 1
 
+    #turn gridList into a random, but solvable, configuration
+    #use parity to make sure its solveble
+    def randomizeBoard(self, globals):
+        """Randomize the board to a solvable configuration using parity to ensure solvability"""
+        import random
+        
+        # Create a random permutation of all tiles
+        tiles = list(range(1, globals.ROWS * globals.COLS)) + [0]
+        random.shuffle(tiles)
+        
+        # Count inversions (excluding the empty tile)
+        def count_inversions(arr):
+            count = 0
+            for i in range(len(arr)):
+                if arr[i] == 0:
+                    continue
+                for j in range(i + 1, len(arr)):
+                    if arr[j] != 0 and arr[i] > arr[j]:
+                        count += 1
+            return count
+        
+        # For solvability, we need even number of inversions
+        inversions = count_inversions(tiles)
+        
+        # If odd number of inversions, swap two non-zero tiles to make it even
+        if inversions % 2 == 1:
+            # Find and swap two different non-zero tiles
+            non_zero_indices = [i for i in range(len(tiles)) if tiles[i] != 0]
+            if len(non_zero_indices) >= 2:
+                i, j = non_zero_indices[0], non_zero_indices[1]
+                tiles[i], tiles[j] = tiles[j], tiles[i]
+        
+        self.gridList = tiles
+
 
 
 

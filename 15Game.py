@@ -46,6 +46,10 @@ def key_handler(event):
     elif event.key == pygame.K_r:
         # Randomize the board
         model.randomizeBoard(globals)
+        print("Board randomized")
+    elif event.key == pygame.K_a:
+        
+
 
 
 #update display

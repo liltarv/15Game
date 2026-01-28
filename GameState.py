@@ -46,11 +46,25 @@ class GameState:
         empty_index, _, _ = self.getEmptyPosition(globals)
         self.swapPieces(empty_index, piece_index)
 
+    def getRowCol(self, index, globals):
+        row = index // globals.COLS
+        col = index % globals.COLS
+        return row, col
 
     #returns an integer heuristic value that is calculates as follows:
     #The sum of the manhattan distances of each piece from its goal position in the 2d grid representation of the game
-    def heuristic(self):
-        return 0
+    def heuristic(self, globals):
+        total_distance = 0
+        
+        for index, value in enumerate(self.gridList):
+            if value != 0:  # Skip the empty space
+                target_index = value - 1
+                current_row, current_col = self.getRowCol(index, globals)
+                target_row, target_col = self.getRowCol(index, globals)
+                total_distance += abs(current_row - target_row) + abs(current_col - target_col)
+        
+        return total_distance
+    
     
 
     #returns a boolean indicating whether gridList is in a solved state

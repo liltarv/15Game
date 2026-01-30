@@ -1,5 +1,6 @@
 from collections import defaultdict
 import heapq
+import GameState
 
 class AStar:
     def __init__(self, globals, initial_gridList):
@@ -32,7 +33,7 @@ class AStar:
         self.hashDict[hash(tuple(gridList))] = tuple(gridList)
         return hash(tuple(gridList))
     
-    def hashToGridList(self, hashNum, num_pieces):
+    def hashToGridList(self, hashNum):
         return list(self.hashDict[hashNum])
     
     def tupleToGridList(self, gridTuple):
@@ -50,4 +51,19 @@ class AStar:
             if curr_h in self.visited:
                 continue
             self.visited[curr_h] = True
+            if curr_h == goal_hash:
+                path = []
+                while curr_p != -1:
+                    path.append(curr_h)
+                    curr_h = curr_p
+                    curr_p = self.parentMap[curr_h]
+                path.reverse()
+                return [self.hashToGridList(h) for h in path]
+            curr_gridList = self.hashToGridList(curr_h)
+            curr_cost = self.costMap[curr_h]
+            curr_state = GameState.GameState(curr_gridList)
+            legal_moves = curr_state.get_legal_moves(self.globals)
+            for direction in legal_moves:
+                #
+
              

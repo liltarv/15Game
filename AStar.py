@@ -74,6 +74,12 @@ class AStar:
             for direction in legal_moves:
                 empty_index = curr_gridList.index(0)
                 piece_index = empty_index + direction_offset[direction]
-                new_gridList = GameState.GameState.move_gridList(curr_gridList, piece_index, direction, self.globals)
-                
+                new_gridList = GameState.GameState.move_gridList(curr_gridList[:], piece_index, direction, self.globals)
+                new_hash = self.gridListToHash(new_gridList)
+                new_cost = curr_cost + 1
+                if not self.visited[new_hash]:
+                    self.parentMap[new_hash] = curr_h
+                    self.costMap[new_hash] = new_cost
+                    f = new_cost + self.heuristic(new_gridList, self.globals)
+                    heapq.heappush(pq, (f, curr_h, new_hash))
              

@@ -46,6 +46,11 @@ class GameState:
         empty_index, _, _ = self.getEmptyPosition(globals)
         self.swapPieces(empty_index, piece_index)
 
+    def move_gridList(gridList, piece_index, direction, globals):
+        empty_index = gridList.index(0)
+        gridList[empty_index], gridList[piece_index] = gridList[piece_index], gridList[empty_index]
+        return gridList    
+
     def getRowCol(self, index, globals):
         row = index // globals.COLS
         col = index % globals.COLS
@@ -64,6 +69,8 @@ class GameState:
                 total_distance += abs(current_row - target_row) + abs(current_col - target_col)
         
         return total_distance
+    
+    
     
     
 

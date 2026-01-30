@@ -1,13 +1,26 @@
 from collections import defaultdict
-
+import heapq
 
 class AStar:
-    def __init__(self, globals, initial_state):
+    def __init__(self, globals, initial_gridList):
         self.globals = globals
-        self.initial_state = initial_state
+        self.initial_gridList = initial_gridList
         self.parentMap = defaultdict(lambda : -1)
         self.costMap = defaultdict(lambda : -1)
         self.visited = set()
+        self.hashDict = defaultdict(lambda : ())
+
+    def heuristic(self, gridList, globals):
+        total_distance = 0
+        
+        for index, value in enumerate(gridList):
+            if value != 0:  # Skip the empty space
+                target_index = value - 1
+                current_row, current_col = index // globals.COLS, index % globals.COLS
+                target_row, target_col = target_index // globals.COLS, target_index % globals.COLS
+                total_distance += abs(current_row - target_row) + abs(current_col - target_col)
+        
+        return total_distance
 
     #gridList is a list representation of the 2d game grid. The empty space is represented by a 0.
     #gridList to integer conversion for hashing and comparison
@@ -16,11 +29,25 @@ class AStar:
     #additionally, the hash must be reversible (we must be able to get the gridList back from the hash)
     #also, it must fit into a standard integer type
     def gridListToHash(self, gridList):
+        self.hashDict[hash(tuple(gridList))] = tuple(gridList)
         return hash(tuple(gridList))
     
     def hashToGridList(self, hashNum, num_pieces):
-        pass
+        return list(self.hashDict[hashNum])
     
+    def tupleToGridList(self, gridTuple):
+        return list(gridTuple)
+
     #conducts A* from initial_state to goal state (solved configuration)
     def aStarSearch(self):
-        pass
+        pq = []
+        heapq.heappush(pq, (self.heuristic(self.initial_gridList, self.globals), -1, self.gridListToHash(self.initial_gridList)))
+        self.costMap[self.gridListToHash(self.initial_gridList)] = 0
+        goal_gridList = GameState.GameState([]).make_base_gridList(self.globals.ROWS, self.globals.COLS)
+        goal_hash = self.gridListToHash(goal_gridList)
+        while pq:
+            curr_f, curr_p, curr_h = heapq.heappop(pq)
+            if curr_h in self.visited:
+                continue
+            self.visited[curr_h] = True
+             

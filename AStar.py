@@ -63,7 +63,17 @@ class AStar:
             curr_cost = self.costMap[curr_h]
             curr_state = GameState.GameState(curr_gridList)
             legal_moves = curr_state.get_legal_moves(self.globals)
+            
+            direction_offset = {
+                (GameState.GameState.Direction.UP, globals.COLS),
+                (GameState.GameState.Direction.DOWN, -globals.COLS),
+                (GameState.GameState.Direction.LEFT, 1),
+                (GameState.GameState.Direction.RIGHT, -1),
+            }
+            
             for direction in legal_moves:
-                #
-
+                empty_index = curr_gridList.index(0)
+                piece_index = empty_index + direction_offset[direction]
+                new_gridList = GameState.GameState.move_gridList(curr_gridList, piece_index, direction, self.globals)
+                
              
